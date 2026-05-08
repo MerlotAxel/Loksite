@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080a;--s1:#0d0f12;--s2:#131517;--s3:#1b1d21;--s4:#23252a;
+--b1:#1e2127;--b2:#272a31;--b3:#32363f;
+--text:#eeeae2;--t2:#6e7280;--t3:#3c3f4a;
+--gold:#c8a96e;--gold3:#9a7832;--gdim:rgba(200,169,110,.09);--gglow:rgba(200,169,110,.18);
+--green:#3a9668;--grdim:rgba(58,150,104,.11);
+--red:#c05050;--rddim:rgba(192,80,80,.1);
+--blue:#4a7fc0;--bldim:rgba(74,127,192,.1);
+--purple:#8060c0;--prdim:rgba(128,96,192,.1);
+--teal:#1d6b62;--coral:#c96940;
+--r:8px;--r2:13px;--r3:20px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Outfit",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+.logo{display:flex;align-items:center;gap:9px;}
+.logo-i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px var(--gglow);flex-shrink:0;}
+.logo-i svg{width:16px;height:16px;}
+.logo-w{font-size:17px;font-weight:700;letter-spacing:-.025em;}
+.logo-w span{color:var(--gold);}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:"Outfit",sans-serif;border:1px solid var(--b2);background:var(--s2);color:var(--t2);transition:all .16s;line-height:1.2;}
+.btn:hover{background:var(--s3);color:var(--text);}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold3));color:#000;border:none;font-weight:700;box-shadow:0 2px 10px var(--gglow);}
+.btn.gold:hover{filter:brightness(1.07);transform:translateY(-1px);}
+.btn.ghost{background:transparent;}
+.btn.danger{background:var(--rddim);color:var(--red);border-color:transparent;}
+.btn.ok{background:var(--grdim);color:var(--green);border-color:rgba(58,150,104,.18);}
+.btn.sm{padding:5px 10px;font-size:11px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);overflow:hidden;margin-bottom:14px;}
+.card-hd{padding:13px 20px;border-bottom:1px solid var(--b1);background:var(--s2);display:flex;align-items:center;justify-content:space-between;}
+.card-t{font-size:14px;font-weight:600;letter-spacing:-.01em;}
+.card-s{font-size:11px;color:var(--t3);margin-top:1px;}
+.card-b{padding:18px 20px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--text);font-family:"Outfit",sans-serif;outline:none;transition:all .18s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gdim);}
+.field input::placeholder,.field textarea::placeholder{color:var(--t3);}
+.field textarea{resize:vertical;min-height:80px;line-height:1.65;}
+.field select option{background:var(--s1);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.b-g{background:var(--gdim);color:var(--gold);}
+.b-gr{background:var(--grdim);color:var(--green);}
+.b-r{background:var(--rddim);color:var(--red);}
+.b-bl{background:var(--bldim);color:var(--blue);}
+.b-pr{background:var(--prdim);color:var(--purple);}
+.b-gy{background:var(--s3);color:var(--t2);}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--s1);border:1px solid var(--b3);border-radius:12px;padding:10px 16px;font-size:13px;color:var(--text);z-index:9999;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast.show{display:flex;align-items:center;gap:8px;animation:tup .22s ease;}
+@keyframes tup{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(5px);z-index:100;display:none;align-items:center;justify-content:center;}
+.ov.show{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--b3);border-radius:20px;padding:26px;width:460px;max-width:95vw;box-shadow:0 12px 48px rgba(0,0,0,.6);}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.65;}
+.modal-ft{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;border-top:1px solid var(--b1);margin-top:2px;}
+@keyframes puls{0%,100%{opacity:1;}50%{opacity:.3;}}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
+.dot-g{background:var(--green);}
+.dot-r{background:var(--red);}
+.dot-o{background:var(--gold);animation:puls 2s infinite;}
+.mono{font-family:"DM Mono",monospace;font-size:12px;}
+.toggle{width:36px;height:20px;border-radius:10px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--gold);}
+.toggle.off{background:var(--s4);}
+.tgl-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;transition:left .18s;}
+.toggle.on .tgl-dot{left:19px;}
+.toggle.off .tgl-dot{left:3px;}
+</style><title>Loksite — Connexion</title>
+<style>
+body{height:100vh;display:flex;flex-direction:column;}
+.banner{background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold3));padding:9px 20px;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;}
+.banner-tag{background:rgba(0,0,0,.18);color:#000;font-size:9px;font-weight:800;padding:2px 9px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase;}
+.banner-txt{font-size:12px;font-weight:600;color:#000;}
+.hero{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;max-width:940px;width:100%;}
+.hl-tag{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.hl-h1{font-size:36px;font-weight:700;line-height:1.08;letter-spacing:-.03em;margin-bottom:12px;}
+.hl-h1 em{font-style:italic;font-family:"Playfair Display",serif;color:var(--gold);font-weight:400;}
+.hl-sub{font-size:14px;color:var(--t2);line-height:1.75;max-width:360px;margin-bottom:28px;}
+.hl-feat{display:flex;flex-direction:column;gap:9px;}
+.hl-fi{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--t2);}
+.hl-fd{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.login-box{background:var(--s1);border:1px solid var(--b2);border-radius:22px;padding:34px;box-shadow:0 12px 48px rgba(0,0,0,.5);position:relative;overflow:hidden;}
+.login-box::before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.35;}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold3));border:none;border-radius:10px;font-size:14px;font-weight:700;color:#000;cursor:pointer;font-family:"Outfit",sans-serif;transition:all .2s;box-shadow:0 3px 16px var(--gglow);}
+.login-btn:hover{filter:brightness(1.07);transform:translateY(-2px);}
+.login-btn:disabled{opacity:.5;transform:none;cursor:not-allowed;}
+.err{background:var(--rddim);border:1px solid rgba(192,80,80,.2);border-radius:8px;padding:10px 13px;font-size:13px;color:#e08080;margin-top:12px;display:none;}
+.err.show{display:block;}
+footer{padding:14px 24px;border-top:1px solid var(--b1);display:flex;justify-content:space-between;}
+.ft-copy{font-size:12px;color:var(--t3);}
+@media(max-width:780px){.hero-inner{grid-template-columns:1fr;}.hl-left{display:none;}}
+</style>
+</head>
+<body>
+<div class="banner"><span class="banner-tag">Loksite</span><span class="banner-txt">Votre site, toujours au sommet de son domaine — automatisé, optimisé, imbattable</span></div>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hl-left">
+      <div class="logo" style="margin-bottom:28px;"><div class="logo-i" style="width:44px;height:44px;border-radius:12px;"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 7v10l8 5 8-5V7L12 2z" stroke="#000" stroke-width="1.5" fill="rgba(0,0,0,.15)"/><path d="M12 6l-4 2.5v5L12 16l4-2.5v-5L12 6z" fill="#000" opacity=".5"/><circle cx="12" cy="11" r="2" fill="#000"/></svg></div><div class="logo-w" style="font-size:26px;">Lok<span>site</span></div></div>
+      <div class="hl-tag">Gestion de présence en ligne</div>
+      <h1 class="hl-h1">Votre commerce,<br><em>toujours parfait</em><br>en ligne</h1>
+      <p class="hl-sub">Loksite gère votre site automatiquement pour que vous restiez concentré sur votre métier.</p>
+      <div class="hl-feat">
+        <div class="hl-fi"><div class="hl-fd"></div>Site professionnel mis à jour en temps réel</div>
+        <div class="hl-fi"><div class="hl-fd"></div>Contenus, horaires et menus automatiques</div>
+        <div class="hl-fi"><div class="hl-fd"></div>Fiche Google Business optimisée</div>
+        <div class="hl-fi"><div class="hl-fd"></div>Support dédié — réponse sous 24h</div>
+      </div>
+    </div>
+    <div class="login-box">
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:3px;">Bienvenue 👋</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:24px;">Connectez-vous à votre espace Loksite</div>
+      <div class="field"><label>Email</label><input type="email" id="email" placeholder="votre@email.fr" autocomplete="email"></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="pass" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Se connecter →</button>
+      <div class="err" id="err"></div>
+      <div style="margin-top:18px;text-align:center;font-size:12px;color:var(--t3);">Sécurisé par <strong style="color:var(--gold);">Supabase</strong> · Loksite © 2026</div>
+    </div>
+  </div>
+</div>
+<footer><div class="ft-copy">© 2026 Loksite — Tous droits réservés</div></footer>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = window.supabase.createClient('https://qhnofvfgutsdgbfwhupg.supabase.co', 'sb_publishable_fJ-oHwhpaB0pBRwMgdwFXQ_GY2Ad9GY');
+function toast(msg,color){
+  const t=document.getElementById('toast');
+  const c={green:'var(--green)',gold:'var(--gold)',red:'var(--red)',blue:'var(--blue)'}[color]||'var(--green)';
+  t.innerHTML=`<span style="width:7px;height:7px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block;"></span>${msg}`;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+<script>
+function showErr(m){const e=document.getElementById('err');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),4000);}
+async function getRole(uid){try{const{data}=await sb.from('profiles').select('role').eq('id',uid).single();return data?.role||'client';}catch(e){return 'client';}}
+async function doLogin(){
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('pass').value;
+  if(!email||!pass){showErr('Remplissez tous les champs');return;}
+  const btn=document.getElementById('login-btn');
+  btn.textContent='Connexion...';btn.disabled=true;
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){showErr('Email ou mot de passe incorrect');btn.textContent='Se connecter →';btn.disabled=false;return;}
+  const role=await getRole(data.user.id);
+  if(role==='admin'){window.location.href='loksite-admin.html';return;}
+  // Client → on récupère son espace_url dans profiles
+  const{data:profile}=await sb.from('profiles').select('espace_url').eq('id',data.user.id).single();
+  if(profile?.espace_url){window.location.href=profile.espace_url;}
+  else{showErr('Espace client introuvable. Contactez Loksite.');btn.textContent='Se connecter →';btn.disabled=false;}
+}
+window.addEventListener('load',async()=>{
+  // Auto-login disabled for security
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body></html>
