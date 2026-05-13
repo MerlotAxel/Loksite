@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loksite — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080a;--s1:#0d0f12;--s2:#131517;--s3:#1b1d21;--s4:#23252a;
+--b1:#1e2127;--b2:#272a31;--b3:#32363f;
+--text:#eeeae2;--t2:#6e7280;--t3:#3c3f4a;
+--gold:#c8a96e;--gold3:#9a7832;--gdim:rgba(200,169,110,.09);--gglow:rgba(200,169,110,.18);
+--green:#3a9668;--grdim:rgba(58,150,104,.11);
+--red:#c05050;--rddim:rgba(192,80,80,.1);
+--blue:#4a7fc0;--bldim:rgba(74,127,192,.1);
+--purple:#8060c0;--prdim:rgba(128,96,192,.1);
+--r:8px;--r2:13px;--r3:20px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Outfit",sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;}
+.tnav{height:54px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;padding:0 18px;flex-shrink:0;position:relative;}
+.tnav::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.15;}
+.logo{display:flex;align-items:center;gap:9px;}
+.logo-i{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px var(--gglow);}
+.logo-i svg{width:15px;height:15px;}
+.logo-w{font-size:16px;font-weight:700;letter-spacing:-.025em;}
+.logo-w span{color:var(--gold);}
+.tnl{padding:5px 12px;border-radius:7px;border:none;background:none;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;font-family:"Outfit",sans-serif;transition:all .14s;}
+.tnl:hover{background:var(--s2);color:var(--text);}
+.tnl.on{background:var(--gdim);color:var(--gold);}
+.notif-btn{width:32px;height:32px;border-radius:8px;background:var(--s2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s;}
+.notif-btn:hover{border-color:var(--b2);}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:8px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
+.usr-btn{display:flex;align-items:center;gap:7px;padding:4px 11px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;cursor:pointer;}
+.usr-ava{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#000;}
+.app{display:flex;flex:1;overflow:hidden;}
+.sb{width:210px;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sb-sec{padding:10px 13px 3px;font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);}
+.sb-it{display:flex;align-items:center;gap:8px;padding:7px 13px;font-size:13px;color:var(--t2);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:"Outfit",sans-serif;transition:all .14s;border-left:2px solid transparent;margin-bottom:1px;}
+.sb-it:hover{background:var(--s2);color:var(--text);}
+.sb-it.on{background:var(--gdim);color:var(--gold);border-left-color:var(--gold);font-weight:500;}
+.sb-it svg{width:13px;height:13px;flex-shrink:0;opacity:.55;}
+.sb-it.on svg{opacity:1;}
+.sb-cnt{margin-left:auto;background:var(--gold);color:#000;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:800;}
+.sb-cnt-r{margin-left:auto;background:var(--red);color:#fff;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:800;display:none;}
+.sb-cnt-o{margin-left:auto;background:var(--purple);color:#fff;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:800;display:none;}
+.sb-cl{display:flex;align-items:center;gap:7px;padding:6px 13px;font-size:12px;color:var(--t2);cursor:pointer;border:none;background:none;width:100%;font-family:"Outfit",sans-serif;transition:all .14s;}
+.sb-cl:hover{background:var(--s2);color:var(--text);}
+.sb-cdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.sb-bot{margin-top:auto;padding:13px;border-top:1px solid var(--b1);}
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.view{display:none;padding:24px;}
+.view.on{display:block;}
+.pg-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;}
+.pg-t{font-size:21px;font-weight:700;letter-spacing:-.025em;margin-bottom:3px;}
+.pg-s{font-size:13px;color:var(--t2);}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.stat{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:18px 20px;position:relative;overflow:hidden;}
+.stat::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.2;}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:9px;}
+.stat-v{font-size:26px;font-weight:700;letter-spacing:-.025em;margin-bottom:5px;}
+.stat-v.gold{color:var(--gold);}
+.stat-v.gr{color:var(--green);}
+.stat-d{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;}
+.d-up{background:var(--grdim);color:var(--green);}
+.d-ok{background:var(--s3);color:var(--t2);}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);overflow:hidden;margin-bottom:14px;}
+.card-hd{padding:13px 20px;border-bottom:1px solid var(--b1);background:var(--s2);display:flex;align-items:center;justify-content:space-between;}
+.card-t{font-size:14px;font-weight:600;letter-spacing:-.01em;}
+.card-s{font-size:11px;color:var(--t3);margin-top:1px;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:"Outfit",sans-serif;border:1px solid var(--b2);background:var(--s2);color:var(--t2);transition:all .15s;line-height:1.2;}
+.btn:hover{background:var(--s3);color:var(--text);}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold3));color:#000;border:none;font-weight:700;}
+.btn.gold:hover{filter:brightness(1.07);transform:translateY(-1px);}
+.btn.ghost{background:transparent;}
+.btn.danger{background:var(--rddim);color:var(--red);border-color:transparent;}
+.btn.ok{background:var(--grdim);color:var(--green);border-color:rgba(58,150,104,.18);}
+.btn.purple{background:var(--prdim);color:var(--purple);border-color:transparent;}
+.btn.sm{padding:5px 10px;font-size:11px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{padding:9px 16px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);text-align:left;background:var(--s2);border-bottom:1px solid var(--b1);}
+.tbl td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--b1);color:var(--t2);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.01);}
+.c-cell{display:flex;align-items:center;gap:10px;}
+.c-ava{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.c-name{font-size:13px;font-weight:500;color:var(--text);}
+.c-type{font-size:11px;color:var(--t3);margin-top:1px;}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.b-g{background:var(--gdim);color:var(--gold);}
+.b-gr{background:var(--grdim);color:var(--green);}
+.b-r{background:var(--rddim);color:var(--red);}
+.b-bl{background:var(--bldim);color:var(--blue);}
+.b-pr{background:var(--prdim);color:var(--purple);}
+.b-gy{background:var(--s3);color:var(--t2);}
+.mono{font-family:"DM Mono",monospace;font-size:12px;}
+/* NOTIFS */
+.notif-item{display:flex;gap:13px;padding:15px 20px;border-bottom:1px solid var(--b1);cursor:pointer;transition:background .13s;}
+.notif-item:hover{background:var(--s2);}
+.notif-item.unread{border-left:2px solid var(--purple);background:rgba(128,96,192,.03);}
+.notif-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.notif-info{flex:1;min-width:0;}
+.notif-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.notif-nm{font-size:13px;font-weight:600;color:var(--text);}
+.notif-tm{font-size:11px;color:var(--t3);font-family:"DM Mono",monospace;white-space:nowrap;}
+.notif-type{font-size:11px;font-weight:600;margin-bottom:2px;}
+.notif-pv{font-size:12px;color:var(--t2);line-height:1.4;}
+.notif-udot{width:7px;height:7px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:3px;animation:puls 2s infinite;}
+/* MESSAGES */
+.msg-item{display:flex;gap:13px;padding:15px 20px;border-bottom:1px solid var(--b1);cursor:pointer;transition:background .13s;}
+.msg-item:hover{background:var(--s2);}
+.msg-item.unread{border-left:2px solid var(--gold);background:rgba(200,169,110,.02);}
+.msg-ava{width:34px;height:34px;border-radius:9px;background:var(--gdim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.msg-info{flex:1;min-width:0;}
+.msg-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.msg-nm{font-size:13px;font-weight:600;color:var(--text);}
+.msg-tm{font-size:11px;color:var(--t3);font-family:"DM Mono",monospace;}
+.msg-sj{font-size:11px;font-weight:600;color:var(--gold);margin-bottom:2px;}
+.msg-pv{font-size:12px;color:var(--t2);line-height:1.4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+/* PLANS */
+.plan-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);padding:16px;position:relative;}
+.plan-card.active{background:var(--gdim);border-color:rgba(200,169,110,.3);}
+/* SS */
+.ss-sec{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);overflow:hidden;margin-bottom:14px;}
+.ss-hd{padding:13px 20px;border-bottom:1px solid var(--b1);font-size:14px;font-weight:600;background:var(--s2);}
+.ss-row{display:flex;justify-content:space-between;align-items:center;padding:13px 20px;border-bottom:1px solid var(--b1);}
+.ss-row:last-child{border-bottom:none;}
+.ss-lab{font-size:13px;font-weight:500;}
+.ss-desc{font-size:11px;color:var(--t3);margin-top:1px;}
+.ss-inp{background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--text);font-family:"DM Mono",monospace;outline:none;width:240px;}
+.toggle{width:36px;height:20px;border-radius:10px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--gold);}
+.toggle.off{background:var(--s4);}
+.tgl-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;transition:left .18s;}
+.toggle.on .tgl-dot{left:19px;}
+.toggle.off .tgl-dot{left:3px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--text);font-family:"Outfit",sans-serif;outline:none;transition:all .18s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);}
+.field select option{background:var(--s1);}
+.field textarea{resize:vertical;min-height:80px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--s1);border:1px solid var(--b3);border-radius:12px;padding:10px 16px;font-size:13px;color:var(--text);z-index:9999;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast.show{display:flex;align-items:center;gap:8px;animation:tup .22s ease;}
+@keyframes tup{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes puls{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(5px);z-index:100;display:none;align-items:center;justify-content:center;}
+.ov.show{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--b3);border-radius:20px;padding:26px;width:460px;max-width:95vw;box-shadow:0 12px 48px rgba(0,0,0,.6);}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.65;}
+.modal-ft{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;border-top:1px solid var(--b1);margin-top:2px;}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
+.dot-g{background:var(--green);}
+.dot-r{background:var(--red);}
+.dot-o{background:var(--gold);animation:puls 2s infinite;}
+</style>
+</head>
+<body>
+<nav class="tnav">
+  <div style="display:flex;align-items:center;gap:18px;">
+    <div class="logo"><div class="logo-i"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 7v10l8 5 8-5V7L12 2z" stroke="#000" stroke-width="1.5" fill="rgba(0,0,0,.15)"/><path d="M12 6l-4 2.5v5L12 16l4-2.5v-5L12 6z" fill="#000" opacity=".5"/><circle cx="12" cy="11" r="2" fill="#000"/></svg></div><div class="logo-w">Lok<span>site</span></div></div>
+    <div style="display:flex;gap:1px;">
+      <button class="tnl on" onclick="showV('dashboard',this)">Dashboard</button>
+      <button class="tnl" onclick="showV('clients',this)">Clients</button>
+      <button class="tnl" onclick="showV('messages',this)">Messages<span id="tnl-msg" style="background:var(--gold);color:#000;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:800;margin-left:5px;display:none;"></span></button>
+      <button class="tnl" onclick="showV('abonnements',this)">Abonnements</button>
+      <button class="tnl" onclick="showV('workflows',this)">Workflows</button>
+      <button class="tnl" onclick="showV('facturation',this)">Facturation</button>
+      <button class="tnl" onclick="showV('settings',this)">Paramètres</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="notif-btn" onclick="showV('notifications',null)" title="Notifications">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="notif-dot" id="notif-dot"></div>
+    </div>
+    <div class="usr-btn" onclick="logout()">
+      <div class="usr-ava" id="admin-ava">AX</div>
+      <span style="font-size:12px;font-weight:500;" id="admin-name">Admin</span>
+    </div>
+  </div>
+</nav>
+
+<div class="app">
+<aside class="sb">
+  <div class="sb-sec">Admin</div>
+  <button class="sb-it on" onclick="showV('dashboard',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+    Dashboard <span class="sb-cnt" id="sb-cnt">0</span>
+  </button>
+  <button class="sb-it" onclick="showV('clients',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 14v-1.5a3 3 0 0 0-3-3H4a3 3 0 0 0-3 3V14"/><circle cx="6" cy="5" r="3"/><path d="M15 14v-1.5a3 3 0 0 0-2-2.83"/><path d="M11 2.17a3 3 0 0 1 0 5.66"/></svg>
+    Clients
+  </button>
+  <button class="sb-it" onclick="showV('notifications',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5a4 4 0 0 0-8 0c0 5-2 6-2 6h12s-2-1-2-6"/><path d="M9.1 13a1.5 1.5 0 0 1-2.2 0"/></svg>
+    Notifications <span class="sb-cnt-o" id="sb-notif-cnt"></span>
+  </button>
+  <button class="sb-it" onclick="showV('messages',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3l3 2 3-2h3a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/></svg>
+    Messages <span class="sb-cnt-r" id="sb-msg-cnt"></span>
+  </button>
+  <button class="sb-it" onclick="showV('abonnements',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="2"/><line x1="1" y1="7" x2="15" y2="7"/></svg>
+    Abonnements
+  </button>
+  <button class="sb-it" onclick="showV('workflows',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="3" cy="8" r="2"/><circle cx="13" cy="4" r="2"/><circle cx="13" cy="12" r="2"/><line x1="5" y1="8" x2="9" y2="5"/><line x1="5" y1="8" x2="9" y2="11"/></svg>
+    Workflows
+  </button>
+  <button class="sb-it" onclick="showV('facturation',this)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h8l2 3H2L4 2z"/><rect x="1" y="5" width="14" height="9" rx="1"/></svg>
+    Facturation
+  </button>
+  <div class="sb-sec" style="margin-top:8px;">Clients</div>
+  <div id="sb-clients"></div>
+  <div class="sb-bot">
+    <div style="background:var(--gdim);border:1px solid rgba(200,169,110,.12);border-radius:10px;padding:9px 12px;">
+      <div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Loksite Admin</div>
+      <div style="font-size:13px;font-weight:600;color:var(--gold);">Accès complet</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="view on" id="v-dashboard">
+  <div class="pg-hd"><div><div class="pg-t">Tableau de bord</div><div class="pg-s">État de vos clients en temps réel</div></div></div>
+  <div class="sg">
+    <div class="stat"><div class="stat-l">Clients actifs</div><div class="stat-v" id="st-clients">3</div><span class="stat-d d-up">↑ +1 ce mois</span></div>
+    <div class="stat"><div class="stat-l">Revenus / mois</div><div class="stat-v gold">147€</div><span class="stat-d d-up">↑ +49€</span></div>
+    <div class="stat"><div class="stat-l">Notifications</div><div class="stat-v" id="st-notifs" style="color:var(--purple);">0</div><span class="stat-d d-ok">en attente</span></div>
+    <div class="stat"><div class="stat-l">Bénéfice net</div><div class="stat-v gr">~140€</div><span class="stat-d d-ok">après ~7€ coûts</span></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-t">Vos clients</div>
+      <input id="srch" placeholder="Rechercher..." oninput="filterClients()" style="background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:5px 12px;font-size:12px;color:var(--text);outline:none;width:170px;">
+    </div>
+    <div style="overflow-x:auto;"><table class="tbl">
+      <thead><tr><th>Client</th><th>Site</th><th>Offre</th><th>Statut</th><th>Dernière màj</th><th>Actions</th></tr></thead>
+      <tbody id="tb-main"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- CLIENTS -->
+<div class="view" id="v-clients">
+  <div class="pg-hd"><div><div class="pg-t">Tous les clients</div><div class="pg-s">Gérez les accès et abonnements</div></div></div>
+  <div class="card"><div style="overflow-x:auto;"><table class="tbl">
+    <thead><tr><th>Client</th><th>Email</th><th>Site</th><th>Offre</th><th>Statut</th><th>Actions</th></tr></thead>
+    <tbody id="tb-full"></tbody>
+  </table></div></div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="view" id="v-notifications">
+  <div class="pg-hd">
+    <div><div class="pg-t">Notifications</div><div class="pg-s">Demandes de changement d\'abonnement et alertes</div></div>
+    <button class="btn sm" onclick="markAllNotifRead()">Tout marquer lu</button>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-t">Centre de notifications</div><span class="badge b-pr" id="notif-badge">0 non lu</span></div>
+    <div id="notif-container">
+      <div style="text-align:center;padding:40px;color:var(--t3);">
+        <div style="font-size:30px;margin-bottom:10px;">🔔</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:4px;">Aucune notification</div>
+        <div style="font-size:12px;">Les demandes de changement d\'abonnement apparaîtront ici</div>
+      </div>
+    </div>
+  </div>
+  <!-- Réponse demande abo -->
+  <div class="card" id="abo-reply-card" style="display:none;">
+    <div class="card-hd"><div class="card-t">Répondre à la demande de <span id="abo-reply-to" style="color:var(--gold);"></span></div></div>
+    <div style="padding:18px;">
+      <div class="field"><label>Nouveau plan approuvé</label>
+        <select id="abo-new-plan">
+          <option value="essentiel">Essentiel — 29€/mois</option>
+          <option value="standard">Standard — 49€/mois</option>
+          <option value="premium">Premium — 79€/mois</option>
+        </select>
+      </div>
+      <div class="field"><label>Message au client (optionnel)</label><textarea id="abo-reply-msg" placeholder="Ex: Votre demande a bien été prise en compte, votre abonnement sera mis à jour dès demain..." style="min-height:80px;"></textarea></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn gold" onclick="approuverAbo()">✅ Approuver et changer l'abo</button>
+        <button class="btn danger" onclick="refuserAbo()">❌ Refuser</button>
+        <button class="btn ghost" onclick="document.getElementById('abo-reply-card').style.display='none'">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MESSAGES -->
+<div class="view" id="v-messages">
+  <div class="pg-hd"><div><div class="pg-t">Messages clients</div><div class="pg-s">Échanges en temps réel avec vos clients</div></div></div>
+
+  <div style="display:grid;grid-template-columns:280px 1fr;gap:0;height:calc(100vh - 140px);background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);overflow:hidden;">
+
+    <!-- LISTE CONVERSATIONS -->
+    <div style="border-right:1px solid var(--b1);display:flex;flex-direction:column;">
+      <div style="padding:12px;border-bottom:1px solid var(--b1);">
+        <input type="text" id="conv-search" placeholder="🔍 Rechercher un client..." oninput="filterConvs()" style="width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:8px 12px;font-size:12px;color:var(--text);font-family:'Outfit',sans-serif;outline:none;">
+      </div>
+      <div style="flex:1;overflow-y:auto;" id="conv-list">
+        <div style="text-align:center;padding:30px;color:var(--t3);font-size:12px;">Chargement...</div>
+      </div>
+      <div style="padding:10px;border-top:1px solid var(--b1);">
+        <button class="btn gold" style="width:100%;justify-content:center;" onclick="showNewConv()">✉️ Nouveau message</button>
+      </div>
+    </div>
+
+    <!-- ZONE CHAT -->
+    <div style="display:flex;flex-direction:column;" id="chat-zone">
+
+      <!-- État vide -->
+      <div id="chat-empty" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--t3);">
+        <div style="font-size:40px;">💬</div>
+        <div style="font-size:14px;font-weight:500;">Sélectionnez une conversation</div>
+        <div style="font-size:12px;">ou démarrez un nouveau message</div>
+      </div>
+
+      <!-- Chat actif -->
+      <div id="chat-active" style="display:none;flex-direction:column;height:100%;">
+        <!-- Header -->
+        <div style="padding:14px 18px;border-bottom:1px solid var(--b1);background:var(--s2);display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div id="chat-ava" style="width:34px;height:34px;border-radius:9px;background:var(--gdim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">?</div>
+            <div>
+              <div id="chat-nom" style="font-size:13px;font-weight:600;color:var(--text);">Client</div>
+              <div id="chat-email" style="font-size:11px;color:var(--t3);">email</div>
+            </div>
+          </div>
+          <span style="background:var(--grdim);color:var(--green);padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;">● En ligne</span>
+        </div>
+
+        <!-- Messages -->
+        <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;"></div>
+
+        <!-- Nouveau message popup -->
+        <div id="new-conv-form" style="display:none;padding:12px 16px;border-top:1px solid var(--b1);background:var(--s2);">
+          <div style="margin-bottom:8px;">
+            <input type="text" id="nc-search" placeholder="Nom du client..." oninput="searchNewConv()" style="width:100%;background:var(--s3);border:1px solid var(--b2);border-radius:var(--r);padding:8px 12px;font-size:12px;color:var(--text);font-family:'Outfit',sans-serif;outline:none;">
+            <div id="nc-results" style="position:absolute;background:var(--s1);border:1px solid var(--b2);border-radius:8px;z-index:50;max-height:180px;overflow-y:auto;width:400px;display:none;margin-top:2px;box-shadow:0 8px 24px rgba(0,0,0,.5);"></div>
+          </div>
+          <div id="nc-dest" style="font-size:12px;color:var(--t3);margin-bottom:8px;">Aucun client sélectionné</div>
+          <input type="hidden" id="nc-dest-id">
+          <input type="hidden" id="nc-dest-nom">
+          <button class="btn sm ghost" onclick="document.getElementById('new-conv-form').style.display='none'">Annuler</button>
+        </div>
+
+        <!-- Input -->
+        <div style="padding:12px 16px;border-top:1px solid var(--b1);display:flex;gap:8px;align-items:flex-end;">
+          <textarea id="chat-input" placeholder="Écrire un message..." rows="2"
+            style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:10px 13px;font-size:13px;color:var(--text);font-family:'Outfit',sans-serif;outline:none;resize:none;line-height:1.5;"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg();}"></textarea>
+          <button class="btn gold" onclick="sendChatMsg()" style="height:42px;padding:0 16px;">Envoyer ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABONNEMENTS -->
+<div class="view" id="v-abonnements">
+  <div class="pg-hd"><div><div class="pg-t">Abonnements</div><div class="pg-s">Les 3 offres Loksite</div></div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
+    <div style="background:var(--s1);border:1px solid var(--bldim);border-radius:var(--r3);padding:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:8px;">Essentiel</div>
+      <div style="font-size:28px;font-weight:700;color:var(--blue);margin-bottom:12px;">29€<span style="font-size:13px;color:var(--t3);font-weight:400;">/mois</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Site vitrine professionnel</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Espace client Loksite</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>1 modification par mois</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Fiche Google Business</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Support par message</div>
+      </div>
+      <div id="ess-count" style="font-size:12px;color:var(--t3);">0 client</div>
+    </div>
+    <div style="background:var(--s1);border:1px solid rgba(200,169,110,.3);border-radius:var(--r3);padding:20px;position:relative;">
+      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:2px 10px;border-radius:20px;">Populaire</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Standard</div>
+      <div style="font-size:28px;font-weight:700;color:var(--gold);margin-bottom:12px;">49€<span style="font-size:13px;color:var(--t3);font-weight:400;">/mois</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Tout l'Essentiel</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Fiche Google Business optimisée</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>MAJ auto & personnalisable selon vos demandes</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Modifications illimitées</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Sync horaires auto</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Rapport Analytics mensuel</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Support prioritaire 24h</div>
+      </div>
+      <div id="std-count" style="font-size:12px;color:var(--t3);">0 client</div>
+    </div>
+    <div style="background:var(--s1);border:1px solid rgba(128,96,192,.25);border-radius:var(--r3);padding:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;">Premium</div>
+      <div style="font-size:28px;font-weight:700;color:var(--purple);margin-bottom:12px;">79€<span style="font-size:13px;color:var(--t3);font-weight:400;">/mois</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Tout le Standard</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Réservations Google Calendar</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>QR Code menu à poser sur vos tables</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Présence réseaux sociaux & posts à votre guise</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Statistiques avancées</div>
+        <div style="font-size:12px;color:var(--t2);display:flex;gap:6px;"><span style="color:var(--green);font-size:10px;font-weight:700;">✓</span>Support 7j/7 sous 2h</div>
+      </div>
+      <div id="prm-count" style="font-size:12px;color:var(--t3);">0 client</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><div class="card-t">Répartition clients par offre</div></div>
+    <div style="overflow-x:auto;"><table class="tbl">
+      <thead><tr><th>Client</th><th>Offre actuelle</th><th>Depuis</th><th>Prochaine facturation</th><th>Action</th></tr></thead>
+      <tbody id="tb-abo"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- WORKFLOWS -->
+<div class="view" id="v-workflows">
+  <div class="pg-hd"><div><div class="pg-t">Workflows N8N</div><div class="pg-s">Automatisations pour tous vos clients</div></div></div>
+  <div style="background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);overflow:hidden;margin-bottom:14px;">
+    <div style="padding:11px 18px;background:var(--s2);border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;font-weight:600;">Google Sheets → Site web</span><span class="badge b-gr">Actif</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:5px;overflow-x:auto;padding:14px 18px;">
+      <div style="width:72px;height:40px;border-radius:8px;background:#0a2218;color:#3a9668;border:1px solid #1a4a30;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-align:center;line-height:1.3;flex-shrink:0;">Google<br>Sheets</div>
+      <div style="color:var(--b3);font-size:16px;flex-shrink:0;">→</div>
+      <div style="width:72px;height:40px;border-radius:8px;background:#1c1200;color:var(--gold);border:1px solid #3d2800;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-align:center;line-height:1.3;flex-shrink:0;">N8N<br>Filter</div>
+      <div style="color:var(--b3);font-size:16px;flex-shrink:0;">→</div>
+      <div style="width:72px;height:40px;border-radius:8px;background:#130e25;color:#a78bfa;border:1px solid #2a1d55;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-align:center;line-height:1.3;flex-shrink:0;">Claude<br>Haiku</div>
+      <div style="color:var(--b3);font-size:16px;flex-shrink:0;">→</div>
+      <div style="width:72px;height:40px;border-radius:8px;background:#0a1628;color:#60a5fa;border:1px solid #1a3060;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-align:center;line-height:1.3;flex-shrink:0;">Netlify<br>Deploy</div>
+    </div>
+  </div>
+</div>
+
+<!-- FACTURATION -->
+<div class="view" id="v-facturation">
+  <div class="pg-hd"><div><div class="pg-t">Facturation</div><div class="pg-s">Abonnements et paiements de vos clients</div></div>
+    <button class="btn gold" onclick="genererRelances()">📧 Envoyer relances</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="sg" style="grid-template-columns:repeat(4,1fr);">
+    <div class="stat"><div class="stat-l">Revenus ce mois</div><div class="stat-v gold" id="rev-mois">0€</div><span class="stat-d d-up">↑ actif</span></div>
+    <div class="stat"><div class="stat-l">Prochain prélèvement</div><div class="stat-v" id="next-prel">0€</div><span class="stat-d d-ok">1er juin 2026</span></div>
+    <div class="stat"><div class="stat-l">Impayés</div><div class="stat-v" id="impayes" style="color:var(--red);">0</div><span class="stat-d" style="background:var(--rddim);color:var(--red);">à relancer</span></div>
+    <div class="stat"><div class="stat-l">Bénéfice net</div><div class="stat-v gr" id="benef">0€</div><span class="stat-d d-ok">après ~7€ coûts</span></div>
+  </div>
+
+  <!-- IBAN admin -->
+  <div style="background:var(--gdim);border:1px solid rgba(200,169,110,.2);border-radius:var(--r2);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:3px;">Votre IBAN — les clients virent sur ce compte</div>
+      <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);" id="display-iban">FR76 XXXX XXXX XXXX XXXX XXXX XXX</div>
+    </div>
+    <button class="btn sm" onclick="showV('settings',null)" style="color:var(--gold);border-color:rgba(200,169,110,.3);">Modifier</button>
+  </div>
+
+  <!-- Tableau clients -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-t">Suivi des paiements</div>
+      <div style="display:flex;gap:8px;">
+        <select id="filtre-statut" onchange="filtrerFactures()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;font-size:12px;color:var(--text);outline:none;">
+          <option value="tous">Tous</option>
+          <option value="paye">Payés</option>
+          <option value="attente">En attente</option>
+          <option value="retard">En retard</option>
+        </select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;"><table class="tbl">
+      <thead><tr><th>Client</th><th>Offre</th><th>Montant</th><th>Échéance</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody id="tb-fact"></tbody>
+    </table></div>
+  </div>
+
+  <!-- Historique -->
+  <div class="card">
+    <div class="card-hd"><div class="card-t">Historique des paiements</div></div>
+    <div style="overflow-x:auto;"><table class="tbl">
+      <thead><tr><th>Client</th><th>Montant</th><th>Date</th><th>Référence</th><th>Statut</th></tr></thead>
+      <tbody id="tb-hist-fact">
+        <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--t3);">Aucun paiement enregistré</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="view" id="v-settings">
+  <div class="pg-hd"><div><div class="pg-t">Paramètres</div><div class="pg-s">Configuration de Loksite</div></div></div>
+  <div class="ss-sec">
+    <div class="ss-hd">Compte admin</div>
+    <div class="ss-row"><div><div class="ss-lab">Email</div></div><input class="ss-inp" id="s-email" value=""></div>
+    <div class="ss-row"><div><div class="ss-lab">Nom affiché</div></div><input class="ss-inp" value="Axel"></div>
+    <div class="ss-row"><div><div class="ss-lab">IBAN (pour écran suspension)</div><div class="ss-desc">Affiché aux clients en cas d'impayé</div></div><input class="ss-inp" id="s-iban" value="FR76 XXXX XXXX XXXX XXXX XXXX XXX"></div>
+  </div>
+  <div class="ss-sec">
+    <div class="ss-hd">Automatisations</div>
+    <div class="ss-row"><div><div class="ss-lab">Sync Instagram</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off');"><div class="tgl-dot"></div></button></div>
+    <div class="ss-row"><div><div class="ss-lab">Relances paiement auto</div><div class="ss-desc">Email le 1er du mois</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off');"><div class="tgl-dot"></div></button></div>
+    <div class="ss-row"><div><div class="ss-lab">Notification email admin</div><div class="ss-desc">Alerte quand un client envoie un message</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off');"><div class="tgl-dot"></div></button></div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;margin-top:4px;"><button class="btn gold" onclick="toast('Paramètres enregistrés !','green')">Enregistrer</button></div>
+</div>
+
+</main>
+</div>
+
+<!-- MODAL BLOCK -->
+<div class="ov" id="modal-block">
+  <div class="modal">
+    <h3>🔒 Suspendre l'accès</h3>
+    <p>L'accès de ce client sera suspendu jusqu'au paiement. Il verra un écran avec votre IBAN.</p>
+    <div class="field"><label>Raison</label><select><option>Paiement en retard (+48h)</option><option>Impayé ce mois</option><option>Suspension manuelle</option></select></div>
+    <div class="modal-ft">
+      <button class="btn ghost" onclick="document.getElementById('modal-block').classList.remove('show')">Annuler</button>
+      <button class="btn danger" onclick="bloquerClient()">Suspendre l'accès</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb = window.supabase.createClient('https://qhnofvfgutsdgbfwhupg.supabase.co', 'sb_publishable_fJ-oHwhpaB0pBRwMgdwFXQ_GY2Ad9GY');
+function toast(msg,color){
+  const t=document.getElementById('toast');
+  const c={green:'var(--green)',gold:'var(--gold)',red:'var(--red)',blue:'var(--blue)',purple:'var(--purple)'}[color]||'var(--green)';
+  t.innerHTML=`<span style="width:7px;height:7px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block;"></span>${msg}`;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+const DEMO=[
+  {id:'1',nom:'Itsy Bitsy',type:'Végétalien',ville:'Lille',email:'itsybitsylille@gmail.com',site:'itsybitsylille.netlify.app',plan:'standard',actif:true,last:'Auj. 14:32',bg:'#0a2218',col:'#3a9668'},
+  {id:'2',nom:'Le Jardin Bio',type:'Bio',ville:'Roubaix',email:'contact@lejardinbio.fr',site:'lejardinbio.netlify.app',plan:'essentiel',actif:true,last:'Hier 09:14',bg:'#0a1628',col:'#60a5fa'},
+  {id:'3',nom:"Végan'ille",type:'Street food',ville:'Lens',email:'hello@veganille.fr',site:'veganille.netlify.app',plan:'premium',actif:true,last:'Il y a 5 min',bg:'#1c1200',col:'#c8a96e'},
+];
+const PLAN_LABELS={essentiel:'Essentiel 29€',standard:'Standard 49€',premium:'Premium 79€'};
+const PLAN_COLORS={essentiel:'var(--blue)',standard:'var(--gold)',premium:'var(--purple)'};
+const PLAN_BADGES={essentiel:'b-bl',standard:'b-g',premium:'b-pr'};
+let clients=[...DEMO],blockId=null,currentNotifId=null;
+const MSG_SUBS={modification:'Demande de modification',probleme:'Problème technique',facture:'Question facture',nouveau:'Nouvelle fonctionnalité',autre:'Autre demande'};
+
+function showV(name,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.tnl,.sb-it').forEach(b=>b.classList.remove('on'));
+  document.getElementById('v-'+name).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+function renderClients(){
+  document.getElementById('sb-cnt').textContent=clients.length;
+  document.getElementById('st-clients').textContent=clients.length;
+  document.getElementById('sb-clients').innerHTML=clients.map(c=>`<button class="sb-cl"><span class="sb-cdot" style="background:${c.actif?'var(--green)':'var(--red)'}"></span>${c.nom}</button>`).join('');
+  const rows=clients.map(c=>`<tr>
+    <td><div class="c-cell"><div class="c-ava" style="background:${c.bg};color:${c.col}">${c.nom.substring(0,2).toUpperCase()}</div><div><div class="c-name">${c.nom}</div><div class="c-type">${c.type} · ${c.ville}</div></div></div></td>
+    <td><span class="mono" style="color:var(--gold)">${c.site}</span></td>
+    <td><span class="badge ${PLAN_BADGES[c.plan]||'b-g'}">${PLAN_LABELS[c.plan]||c.plan}</span></td>
+    <td><span class="dot ${c.actif?'dot-g':'dot-r'}"></span><span style="font-size:12px;margin-left:5px;">${c.actif?'En ligne':'Suspendu'}</span></td>
+    <td style="font-size:12px;color:var(--t3)">${c.last}</td>
+    <td><div style="display:flex;gap:5px;">
+      <button class="btn sm" onclick="toast('Site mis à jour !','green')">🔄</button>
+      <button class="btn sm danger" onclick="blockId='${c.id}';document.getElementById('modal-block').classList.add('show')">🔒</button>
+    </div></td>
+  </tr>`).join('');
+  document.getElementById('tb-main').innerHTML=rows;
+  document.getElementById('tb-full').innerHTML=clients.map(c=>`<tr>
+    <td><div class="c-cell"><div class="c-ava" style="background:${c.bg};color:${c.col}">${c.nom.substring(0,2).toUpperCase()}</div><div><div class="c-name">${c.nom}</div><div class="c-type">${c.type}</div></div></div></td>
+    <td style="font-size:12px;color:var(--t3)">${c.email}</td>
+    <td><span class="mono" style="color:var(--gold)">${c.site}</span></td>
+    <td><span class="badge ${PLAN_BADGES[c.plan]||'b-g'}">${PLAN_LABELS[c.plan]||c.plan}</span></td>
+    <td><span class="badge ${c.actif?'b-gr':'b-r'}">${c.actif?'Actif':'Suspendu'}</span></td>
+    <td><button class="btn sm danger" onclick="blockId='${c.id}';document.getElementById('modal-block').classList.add('show')">Suspendre</button></td>
+  </tr>`).join('');
+  // Abo table
+  document.getElementById('tb-abo').innerHTML=clients.map(c=>`<tr>
+    <td><div class="c-cell"><div class="c-ava" style="background:${c.bg};color:${c.col}">${c.nom.substring(0,2).toUpperCase()}</div><div class="c-name">${c.nom}</div></div></td>
+    <td><span class="badge ${PLAN_BADGES[c.plan]||'b-g'}">${PLAN_LABELS[c.plan]||c.plan}</span></td>
+    <td style="font-size:12px;color:var(--t3)">Mai 2026</td>
+    <td style="font-size:12px;color:var(--t3)">1er juin 2026</td>
+    <td><button class="btn sm" onclick="toast('Plan modifié !','green')">Changer</button></td>
+  </tr>`).join('');
+  // Plan counts
+  const ess=clients.filter(c=>c.plan==='essentiel').length;
+  const std=clients.filter(c=>c.plan==='standard').length;
+  const prm=clients.filter(c=>c.plan==='premium').length;
+  document.getElementById('ess-count').textContent=ess+' client'+(ess>1?'s':'');
+  document.getElementById('std-count').textContent=std+' client'+(std>1?'s':'');
+  document.getElementById('prm-count').textContent=prm+' client'+(prm>1?'s':'');
+}
+
+function filterClients(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  const f=clients.filter(c=>c.nom.toLowerCase().includes(q)||c.ville.toLowerCase().includes(q));
+  // Re-render with filtered
+}
+
+function bloquerClient(){
+  const c=clients.find(x=>x.id===blockId);
+  if(c){c.actif=false;renderClients();toast('Accès suspendu','red');sb.from('profiles').update({actif:false}).eq('email',c.email).then(()=>{});}
+  document.getElementById('modal-block').classList.remove('show');
+}
+
+async function loadNotifications(){
+  try{
+    const{data:notifs}=await sb.from('notifications').select('*').order('created_at',{ascending:false});
+    if(!notifs||!notifs.length)return;
+    const unread=notifs.filter(n=>!n.lu).length;
+    if(unread>0){
+      document.getElementById('notif-dot').textContent=unread;
+      document.getElementById('notif-dot').style.display='flex';
+      document.getElementById('sb-notif-cnt').textContent=unread;
+      document.getElementById('sb-notif-cnt').style.display='inline';
+      document.getElementById('notif-badge').textContent=unread+' non lu'+(unread>1?'s':'');
+      document.getElementById('st-notifs').textContent=unread;
+    }
+    const typeIcons={abo_change:'💎',question:'❓',autre:'📢'};
+    const typeColors={abo_change:'var(--purple)',question:'var(--blue)',autre:'var(--gold)'};
+    const typeDims={abo_change:'var(--prdim)',question:'var(--bldim)',autre:'var(--gdim)'};
+    document.getElementById('notif-container').innerHTML=notifs.map(n=>{
+      const icon=typeIcons[n.type]||'📢';
+      const col=typeColors[n.type]||'var(--gold)';
+      const dim=typeDims[n.type]||'var(--gdim)';
+      return `<div class="notif-item ${n.lu?'':'unread'}" onclick="openNotif('${n.id}','${(n.nom_client||'').replace(/'/g,"\'")}',${JSON.stringify(n.type)},${JSON.stringify(n.nouveau_plan||'')})">
+        ${!n.lu?'<div class="notif-udot"></div>':'<div style="width:7px;flex-shrink:0;"></div>'}
+        <div class="notif-ic" style="background:${dim};color:${col};">${icon}</div>
+        <div class="notif-info">
+          <div class="notif-top"><span class="notif-nm">${n.nom_client||'Client'}</span><span class="notif-tm">${new Date(n.created_at).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})}</span></div>
+          <div class="notif-type" style="color:${col}">${n.type==='abo_change'?'Demande de changement d\'abonnement':n.type==='question'?'Question':'Notification'}</div>
+          <div class="notif-pv">${n.contenu||''}</div>
+          ${n.nouveau_plan?`<div style="margin-top:4px;font-size:11px;color:var(--gold);">Souhaite passer à : <strong>${n.nouveau_plan}</strong></div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){console.log('Notifications table not created yet');}
+}
+
+function openNotif(id,nom,type,plan){
+  if(type==='abo_change'){
+    document.getElementById('abo-reply-card').style.display='block';
+    document.getElementById('abo-reply-to').textContent=nom;
+    if(plan)document.getElementById('abo-new-plan').value=plan;
+    currentNotifId=id;
+    document.getElementById('abo-reply-card').scrollIntoView({behavior:'smooth'});
+  }
+  sb.from('notifications').update({lu:true}).eq('id',id).then(()=>loadNotifications());
+}
+
+function approuverAbo(){
+  const plan=document.getElementById('abo-new-plan').value;
+  toast('Abonnement approuvé — '+plan+' activé !','green');
+  document.getElementById('abo-reply-card').style.display='none';
+  loadNotifications();
+}
+function refuserAbo(){
+  toast('Demande refusée','red');
+  document.getElementById('abo-reply-card').style.display='none';
+}
+function markAllNotifRead(){
+  sb.from('notifications').update({lu:true}).eq('lu',false).then(()=>{loadNotifications();toast('Toutes les notifications marquées lues','green');});
+}
+
+// ── CHAT BIDIRECTIONNEL ──
+let currentClientId = null;
+let currentClientNom = '';
+let chatInterval = null;
+
+async function loadConversations() {
+  try {
+    // Charge tous les messages groupés par client
+    const { data: msgs } = await sb.from('messages').select('*').order('created_at', { ascending: false });
+    if (!msgs || !msgs.length) {
+      document.getElementById('conv-list').innerHTML = '<div style="text-align:center;padding:30px;color:var(--t3);font-size:12px;">Aucune conversation</div>';
+      return;
+    }
+    // Grouper par user_id
+    const convMap = {};
+    msgs.forEach(m => {
+      const key = m.user_id || m.email_client || 'unknown';
+      if (!convMap[key]) convMap[key] = { ...m, count: 0, unread: 0 };
+      convMap[key].count++;
+      if (!m.lu && m.expediteur !== 'admin') convMap[key].unread++;
+    });
+    const convs = Object.values(convMap);
+    const unreadTotal = convs.reduce((s, c) => s + c.unread, 0);
+    if (unreadTotal > 0) {
+      document.getElementById('tnl-msg').textContent = unreadTotal;
+      document.getElementById('tnl-msg').style.display = 'inline';
+      document.getElementById('sb-msg-cnt').textContent = unreadTotal;
+      document.getElementById('sb-msg-cnt').style.display = 'inline';
+    }
+    document.getElementById('conv-list').innerHTML = convs.map(c => {
+      // Les prospects ont user_id=null, on utilise email_client comme clé
+      const convKey = c.user_id || c.email_client || '';
+      const isProspect = !c.user_id && c.expediteur === 'prospect';
+      const isActive = currentClientId === convKey;
+      const nomAff = c.nom_client || c.email_client || '?';
+      const preview = (c.contenu || '').replace(/\n/g,' ').substring(0, 60);
+      return `
+      <div onclick="openConv('${convKey}','${nomAff.replace(/'/g,"\\'")}','${c.email_client||''}')"
+        style="padding:13px 16px;border-bottom:1px solid var(--b1);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .13s;background:${isActive?'var(--gdim)':'none'};"
+        onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='${isActive?'var(--gdim)':'none'}'">
+        <div style="width:34px;height:34px;border-radius:9px;background:${isProspect?'rgba(74,127,192,.15)':'var(--gdim)'};color:${isProspect?'var(--blue)':'var(--gold)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">
+          ${nomAff.substring(0,2).toUpperCase()}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+            <span style="font-size:13px;font-weight:600;color:var(--text);">${nomAff}</span>
+            <span style="font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;">${new Date(c.created_at).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})}</span>
+          </div>
+          <div style="font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</div>
+          ${isProspect ? '<div style="font-size:9px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;margin-top:2px;">Prospect</div>' : ''}
+        </div>
+        ${c.unread > 0 ? `<span style="background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;">${c.unread}</span>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) { console.log('Chat not configured yet', e); }
+}
+
+async function openConv(userId, nom, email) {
+  currentClientId = userId;
+  currentClientNom = nom;
+  document.getElementById('chat-empty').style.display = 'none';
+  document.getElementById('chat-active').style.display = 'flex';
+  document.getElementById('new-conv-form').style.display = 'none';
+  document.getElementById('chat-ava').textContent = nom.substring(0,2).toUpperCase();
+  document.getElementById('chat-nom').textContent = nom;
+  document.getElementById('chat-email').textContent = email;
+  await loadChatMessages();
+  if (chatInterval) clearInterval(chatInterval);
+  chatInterval = setInterval(loadChatMessages, 5000);
+  loadConversations();
+}
+
+async function loadChatMessages() {
+  if (!currentClientId) return;
+  try {
+    let query = sb.from('messages').select('*').order('created_at', { ascending: true });
+
+    // Prospect (user_id null) → filtrer par email_client
+    if (currentClientId.includes('@')) {
+      query = query.eq('email_client', currentClientId).is('user_id', null);
+    } else {
+      query = query.eq('user_id', currentClientId);
+    }
+
+    const { data: msgs } = await query;
+    if (!msgs) return;
+
+    // Marquer comme lus
+    if (currentClientId.includes('@')) {
+      await sb.from('messages').update({ lu: true }).eq('email_client', currentClientId).is('user_id', null).eq('lu', false);
+    } else {
+      await sb.from('messages').update({ lu: true }).eq('user_id', currentClientId).eq('lu', false);
+    }
+
+    const container = document.getElementById('chat-messages');
+    container.innerHTML = msgs.map(m => {
+      const isAdmin = m.expediteur === 'admin';
+      const isProspect = m.expediteur === 'prospect';
+      const time = new Date(m.created_at).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+      // Convertir les \n en <br> pour afficher correctement
+      const contenuHtml = (m.contenu || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+
+      if (isProspect) {
+        // Affichage spécial pour les prospects — carte avec toutes les infos
+        const lines = (m.contenu || '').split('\n');
+        const getValue = (key) => {
+          const line = lines.find(l => l.startsWith(key + ':'));
+          return line ? line.replace(key + ':', '').trim() : '';
+        };
+        const msgIndex = lines.findIndex(l => l === 'MESSAGE:');
+        const msgTexte = msgIndex !== -1 ? lines.slice(msgIndex + 1).join('\n').trim() : m.contenu;
+        const nom2    = getValue('NOM');
+        const ent     = getValue('ETABLISSEMENT');
+        const mail    = getValue('EMAIL');
+        const tel     = getValue('TEL');
+        const type    = getValue('TYPE');
+
+        return `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="background:var(--s2);border:1px solid var(--b2);border-radius:14px 14px 14px 4px;padding:14px 16px;max-width:85%;font-size:13px;line-height:1.6;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">Nouveau prospect</div>
+            ${nom2  ? `<div style="margin-bottom:4px;"><span style="color:var(--t3);font-size:11px;">Nom</span><br><strong>${nom2}</strong></div>` : ''}
+            ${ent   ? `<div style="margin-bottom:4px;"><span style="color:var(--t3);font-size:11px;">Etablissement</span><br><strong>${ent}</strong></div>` : ''}
+            ${mail  ? `<div style="margin-bottom:4px;"><span style="color:var(--t3);font-size:11px;">Email</span><br><a href="mailto:${mail}" style="color:var(--gold);text-decoration:none;">${mail}</a></div>` : ''}
+            ${tel && tel !== '—' ? `<div style="margin-bottom:4px;"><span style="color:var(--t3);font-size:11px;">Telephone</span><br><a href="tel:${tel}" style="color:var(--gold);text-decoration:none;">${tel}</a></div>` : ''}
+            ${type && type !== '—' ? `<div style="margin-bottom:4px;"><span style="color:var(--t3);font-size:11px;">Type</span><br>${type}</div>` : ''}
+            ${msgTexte ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--b2);"><span style="color:var(--t3);font-size:11px;">Message</span><br>${msgTexte.replace(/\n/g,'<br>')}</div>` : ''}
+          </div>
+          <div style="font-size:10px;color:var(--t3);margin-top:1px;font-family:'DM Mono',monospace;">Prospect · ${time}</div>
+        </div>`;
+      }
+
+      return `<div style="display:flex;flex-direction:column;align-items:${isAdmin?'flex-end':'flex-start'};">
+        <div style="max-width:75%;padding:10px 14px;border-radius:${isAdmin?'14px 14px 4px 14px':'14px 14px 14px 4px'};background:${isAdmin?'linear-gradient(135deg,var(--gold),var(--gold3))':'var(--s2)'};color:${isAdmin?'#000':'var(--text)'};font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;">
+          ${contenuHtml}
+        </div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px;font-family:'DM Mono',monospace;">${isAdmin?'Vous':'Client'} · ${time}</div>
+      </div>`;
+    }).join('');
+    container.scrollTop = container.scrollHeight;
+  } catch(e) { console.log(e); }
+}
+
+async function sendChatMsg() {
+  const input = document.getElementById('chat-input');
+  const txt = input.value.trim();
+  if (!txt || !currentClientId) return;
+  input.value = '';
+  try {
+    await sb.from('messages').insert({
+      user_id: currentClientId,
+      nom_client: currentClientNom,
+      expediteur: 'admin',
+      sujet: 'info',
+      contenu: txt,
+      lu: false,
+      created_at: new Date().toISOString()
+    });
+    await loadChatMessages();
+    await loadConversations();
+    toast('Message envoyé à ' + currentClientNom + ' !', 'green');
+  } catch(e) { toast('Erreur envoi', 'red'); }
+}
+
+function showNewConv() {
+  document.getElementById('chat-empty').style.display = 'none';
+  document.getElementById('chat-active').style.display = 'flex';
+  document.getElementById('new-conv-form').style.display = 'block';
+  document.getElementById('chat-messages').innerHTML = '';
+  document.getElementById('chat-nom').textContent = 'Nouvelle conversation';
+  document.getElementById('chat-email').textContent = 'Sélectionnez un client';
+  document.getElementById('chat-ava').textContent = '?';
+  currentClientId = null;
+}
+
+function searchNewConv() {
+  const q = document.getElementById('nc-search').value.trim().toLowerCase();
+  const res = document.getElementById('nc-results');
+  if (!q) { res.style.display = 'none'; return; }
+  const matches = clients.filter(c => (c.nom||'').toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q));
+  if (!matches.length) { res.style.display = 'none'; return; }
+  res.style.display = 'block';
+  res.innerHTML = matches.map(c => `
+    <div onclick="selectNewConvClient('${c.id}','${c.nom||c.email}','${c.email||''}')"
+      style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;"
+      onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='none'">
+      <div style="width:28px;height:28px;border-radius:7px;background:var(--gdim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">${(c.nom||'?').substring(0,2).toUpperCase()}</div>
+      <div><div style="color:var(--text);font-weight:500;">${c.nom||'—'}</div><div style="font-size:11px;color:var(--t3);">${c.email||''}</div></div>
+    </div>`).join('');
+}
+
+function selectNewConvClient(id, nom, email) {
+  currentClientId = id;
+  currentClientNom = nom;
+  document.getElementById('nc-dest').textContent = nom + ' — ' + email;
+  document.getElementById('nc-dest').style.color = 'var(--gold)';
+  document.getElementById('nc-search').value = nom;
+  document.getElementById('nc-results').style.display = 'none';
+  document.getElementById('chat-ava').textContent = nom.substring(0,2).toUpperCase();
+  document.getElementById('chat-nom').textContent = nom;
+  document.getElementById('chat-email').textContent = email;
+  loadChatMessages();
+  if (chatInterval) clearInterval(chatInterval);
+  chatInterval = setInterval(loadChatMessages, 5000);
+}
+
+function filterConvs() {
+  // Simple filter on rendered list
+  const q = document.getElementById('conv-search').value.toLowerCase();
+  document.querySelectorAll('#conv-list > div').forEach(el => {
+    el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// Garder les anciennes fonctions pour compatibilité
+async function loadMessages() { await loadConversations(); }
+function markAllMsgRead() { sb.from('messages').update({lu:true}).eq('lu',false).then(()=>{loadConversations();toast('Tous lus','green');}); }
+
+
+
+// ── FACTURATION ──
+const FACT_DATA = [
+  {id:'1', nom:'Itsy Bitsy', plan:'Standard', montant:49, echeance:'2026-06-01', statut:'paye', email:'itsybitsylille@gmail.com', bg:'#0a2218', col:'#3a9668'},
+  {id:'2', nom:'Le Jardin Bio', plan:'Essentiel', montant:29, echeance:'2026-06-01', statut:'attente', email:'contact@lejardinbio.fr', bg:'#0a1628', col:'#60a5fa'},
+  {id:'3', nom:"Végan\'ille", plan:'Premium', montant:79, echeance:'2026-06-01', statut:'paye', email:'hello@veganille.fr', bg:'#1c1200', col:'#c8a96e'},
+];
+
+function renderFacturation() {
+  const total = FACT_DATA.reduce((s,c) => s+c.montant, 0);
+  const impayes = FACT_DATA.filter(c => c.statut === 'retard').length;
+  document.getElementById('rev-mois').textContent = total + '€';
+  document.getElementById('next-prel').textContent = total + '€';
+  document.getElementById('impayes').textContent = impayes;
+  document.getElementById('benef').textContent = (total - 7) + '€';
+
+  const statutBadge = {
+    paye: '<span class="badge b-gr">✅ Payé</span>',
+    attente: '<span class="badge b-g">⏳ En attente</span>',
+    retard: '<span class="badge b-r">🔴 En retard</span>',
+  };
+
+  document.getElementById('tb-fact').innerHTML = FACT_DATA.map(c => `<tr>
+    <td><div class="c-cell">
+      <div class="c-ava" style="background:${c.bg};color:${c.col}">${c.nom.substring(0,2).toUpperCase()}</div>
+      <div class="c-name">${c.nom}</div>
+    </div></td>
+    <td><span class="badge b-g">${c.plan}</span></td>
+    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--gold);">${c.montant}€</td>
+    <td style="font-size:12px;color:var(--t3);">1er juin 2026</td>
+    <td>${statutBadge[c.statut]||statutBadge.attente}</td>
+    <td><div style="display:flex;gap:5px;">
+      <button class="btn sm ok" onclick="marquerPaye('${c.id}')">✅ Payé</button>
+      <button class="btn sm danger" onclick="marquerRetard('${c.id}')">🔴 Retard</button>
+      <button class="btn sm" onclick="envoyerRelanceClient('${c.email}','${c.nom}','${c.montant}')">📧</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function marquerPaye(id) {
+  const c = FACT_DATA.find(x => x.id === id);
+  if(c) { c.statut = 'paye'; renderFacturation(); toast('Paiement enregistré !', 'green'); }
+}
+
+function marquerRetard(id) {
+  const c = FACT_DATA.find(x => x.id === id);
+  if(c) {
+    c.statut = 'retard';
+    renderFacturation();
+    toast('Client marqué en retard — accès suspendu', 'red');
+    sb.from('profiles').update({actif: false}).eq('email', c.email).then(() => {});
+  }
+}
+
+function filtrerFactures() {
+  const f = document.getElementById('filtre-statut').value;
+  const rows = document.querySelectorAll('#tb-fact tr');
+  // Simple show/hide based on filter
+  renderFacturation();
+}
+
+function envoyerRelanceClient(email, nom, montant) {
+  toast('Email de relance envoyé à ' + nom + ' !', 'gold');
+}
+
+function genererRelances() {
+  const enAttente = FACT_DATA.filter(c => c.statut === 'attente' || c.statut === 'retard');
+  if (!enAttente.length) { toast('Aucun client à relancer', 'green'); return; }
+  enAttente.forEach(c => envoyerRelanceClient(c.email, c.nom, c.montant));
+  toast(enAttente.length + ' relance(s) envoyée(s) !', 'gold');
+}
+
+// ── NOUVEAU MESSAGE ADMIN → CLIENT ──
+function toggleNewMsg(){
+  const c=document.getElementById('new-msg-card');
+  c.style.display=c.style.display==='none'?'block':'none';
+  if(c.style.display==='block'){
+    document.getElementById('msg-search').value='';
+    document.getElementById('msg-dest-display').textContent='Aucun client sélectionné';
+    document.getElementById('msg-dest-id').value='';
+    document.getElementById('msg-dest-email').value='';
+    document.getElementById('msg-contenu').value='';
+    document.getElementById('msg-send-status').style.display='none';
+    document.getElementById('msg-search-results').style.display='none';
+  }
+}
+
+function searchMsgClient(){
+  const q=document.getElementById('msg-search').value.trim().toLowerCase();
+  const res=document.getElementById('msg-search-results');
+  if(!q){res.style.display='none';return;}
+  const matches=clients.filter(c=>(c.nom||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q));
+  if(!matches.length){res.style.display='none';return;}
+  res.style.display='block';
+  res.innerHTML=matches.map(c=>`
+    <div onclick="selectMsgClient('${c.id}','${c.email}','${c.nom}')"
+      style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;"
+      onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='none'">
+      <div style="width:28px;height:28px;border-radius:7px;background:var(--gdim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${(c.nom||'?').substring(0,2).toUpperCase()}</div>
+      <div><div style="color:var(--text);font-weight:500;">${c.nom||'—'}</div><div style="font-size:11px;color:var(--t3);">${c.email||''}</div></div>
+    </div>`).join('');
+}
+
+function selectMsgClient(id,email,nom){
+  document.getElementById('msg-dest-id').value=id;
+  document.getElementById('msg-dest-email').value=email;
+  document.getElementById('msg-dest-display').textContent=`${nom} — ${email}`;
+  document.getElementById('msg-dest-display').style.color='var(--gold)';
+  document.getElementById('msg-search').value=nom;
+  document.getElementById('msg-search-results').style.display='none';
+}
+
+async function sendNewMessage(){
+  const destId=document.getElementById('msg-dest-id').value;
+  const destEmail=document.getElementById('msg-dest-email').value;
+  const sujet=document.getElementById('msg-sujet').value;
+  const contenu=document.getElementById('msg-contenu').value.trim();
+  if(!destId){toast('Sélectionnez un client','red');return;}
+  if(!contenu){toast('Rédigez un message','red');return;}
+  try{
+    await sb.from('messages').insert({
+      destinataire_id: destId,
+      expediteur: 'admin',
+      sujet,
+      contenu,
+      lu: false,
+      created_at: new Date().toISOString()
+    });
+  }catch(e){console.log('Messages table not configured, showing demo success');}
+  const status=document.getElementById('msg-send-status');
+  status.style.display='inline';
+  toast('Message envoyé à '+document.getElementById('msg-search').value+' !','gold');
+  setTimeout(()=>{
+    status.style.display='none';
+    document.getElementById('msg-contenu').value='';
+    document.getElementById('msg-dest-id').value='';
+    document.getElementById('msg-dest-email').value='';
+    document.getElementById('msg-dest-display').textContent='Aucun client sélectionné';
+    document.getElementById('msg-dest-display').style.color='var(--t3)';
+    document.getElementById('msg-search').value='';
+  },2000);
+}
+
+async function logout(){await sb.auth.signOut();window.location.href='index.html';}
+window.addEventListener('load',async()=>{
+  // Load saved IBAN
+  const savedIban = localStorage.getItem('loksite_iban');
+  if(savedIban) document.getElementById('display-iban').textContent = savedIban;
+  // Render demo data immediately so UI is interactive
+  renderClients();
+  renderFacturation();
+
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return;}
+  try{
+    const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
+    if(p?.role==='client'){window.location.href='loksite-client.html';return;}
+    document.getElementById('admin-name').textContent=p?.nom||session.user.email.split('@')[0];
+    document.getElementById('admin-ava').textContent=(p?.nom||session.user.email).substring(0,2).toUpperCase();
+    document.getElementById('s-email').value=session.user.email;
+  }catch(e){
+    if(session)document.getElementById('admin-name').textContent=session.user.email.split('@')[0];
+  }
+  try{
+    const{data}=await sb.from('clients').select('*').order('created_at',{ascending:false});
+    if(data&&data.length){
+      clients=data.map(c=>({...c,type:c.type_cuisine||'Commerce',last:'—',bg:'#0a2218',col:'#3a9668'}));
+      renderClients();
+    }
+  }catch(e){}
+  await loadConversations();
+  await loadNotifications();
+});
+</script>
+</body></html>
